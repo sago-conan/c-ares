@@ -31,12 +31,21 @@ matrix:
       before_script:
         - export CONAN_BASE_PROFILE="$(pwd)/profile/Android.profile"
         - export PATH="$ANDROID_HOME/cmake/3.10.2.4988404/bin:$PATH"
+      env:
+        - CONAN_ARCHS="armv7"
+        - CONAN_CLANG_VERSIONS="8"
 
     - <<: *macOS
       before_script:
         - export CONAN_BASE_PROFILE="$(pwd)/profile/iOS.profile"
+      env:
+        - CONAN_ARCHS="armv8"
+        - CONAN_APPLE_CLANG_VERSIONS="10.0"
 
     - <<: *macOS
+      env:
+        - CONAN_ARCHS="x86_64"
+        - CONAN_APPLE_CLANG_VERSIONS="10.0"
 
 install:
   - pip install conan conan-package-tools --upgrade
