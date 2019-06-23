@@ -43,7 +43,8 @@ class CAresConan(ConanFile):
         cmake.definitions["CARES_STATIC"] = not self.options.shared
         cmake.definitions["CARES_SHARED"] = self.options.shared
         cmake.definitions["CARES_INSTALL"] = True
-        cmake.definitions["CARES_STATIC_PIC"] = self.options.fPIC
+        if "fPIC" in self.options:
+            cmake.definitions["CARES_STATIC_PIC"] = self.options.fPIC
         cmake.definitions["CARES_BUILD_TESTS"] = False
         cmake.definitions["CARES_BUILD_TOOLS"] = self.options.with_tools
         if self.settings.compiler == "Visual Studio":
