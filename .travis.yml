@@ -1,0 +1,46 @@
+env:
+  global:
+    - CONAN_USERNAME="sago"
+    - CONAN_CHANNEL="testing"
+    - CONAN_UPLOAD="https://api.bintray.com/conan/suwei-air/sago-conan"
+    - CONAN_STABLE_BRANCH_PATTERN="master"
+
+macOS: &macOS
+  os: osx
+  osx_image: xcode10
+  language: generic
+  before_install:
+    - brew install pyenv-virtualenv
+    - pyenv install 3.7.3
+    - pyenv rehash
+    - eval "$(pyenv init -)"
+    - pyenv virtualenv 3.7.3 venv
+    - pyenv activate venv
+
+matrix:
+  include:
+    - language: android
+      android:
+        components:
+          - tools
+          - platform-tools
+      before_install:
+        - echo y | sdkmanager "cmake;3.10.2.4988404" "ndk-bundle"
+        - virtualenv -p python3 venv
+        - source venv/bin/activate
+      before_script:
+        - export CONAN_BASE_PROFILE="$(pwd)/profile/Android.profile"
+        - export PATH="$ANDROID_HOME/cmake/3.10.2.4988404/bin:$PATH"
+
+    - <<: *macOS
+      before_script:
+        - export CONAN_BASE_PROFILE="$(pwd)/profile/iOS.profile"
+
+    - <<: *macOS
+
+install:
+  - pip install conan conan-package-tools --upgrade
+  - conan user
+
+script:
+  - python build.py
