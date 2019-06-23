@@ -47,9 +47,10 @@ class CAresConan(ConanFile):
             cmake.definitions["CARES_STATIC_PIC"] = self.options.fPIC
         cmake.definitions["CARES_BUILD_TESTS"] = False
         cmake.definitions["CARES_BUILD_TOOLS"] = self.options.with_tools
-        if self.settings.compiler == "Visual Studio":
-            static_runtime = self.settings.compiler.runtime.startswith("MT")
-            cmake.definitions["CARES_MSVC_STATIC_RUNTIME"] = static_runtime
+        runtime = self.settings.get_safe("compiler.runtime")
+        if runtime:
+            cmake.definitions[
+                "CARES_MSVC_STATIC_RUNTIME"] = runtime.startswith("MT")
         # Cross compile
         if self.settings.os == "Android":
             cmake.definitions["CMAKE_TOOLCHAIN_FILE"] = os.path.join(
